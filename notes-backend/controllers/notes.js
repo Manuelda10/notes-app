@@ -95,7 +95,7 @@ notesRouter.get('/:id/categories', async (req, res) => {
             attributes: ['categoryId']
         })
         for (const mCategory of matchedCategories) {
-            const category = await Category.findByPk(mCat.dataValues.categoryId)
+            const category = await Category.findByPk(mCategory.dataValues.categoryId)
             categories.push(category)
         }
 
