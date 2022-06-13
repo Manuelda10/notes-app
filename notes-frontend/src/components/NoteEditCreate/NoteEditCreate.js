@@ -12,7 +12,7 @@ const NoteCreate = ({ onClose, handleCreateNote }) => {
         const note = {
             title,
             content,
-            categories: categories === '' ? undefined : categories
+            categories
         }
         handleCreateNote(note)
         onClose()
