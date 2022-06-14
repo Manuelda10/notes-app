@@ -158,6 +158,22 @@ notesRouter.put('/:id', async (req, res) => {
                         message: 'Note was updated successfully but Category was not. There is a problem'
                     })
                 }
+
+                //We identify if there is a category that needs to be deleted on category table because is not be using
+                const cateN = await CategoryNote.findOne({
+                    where: {categoryId: dCatId}
+                })
+
+                if (cateN === null || cateN === undefined) {
+                    const deletedCategory = await Category.destroy({
+                        where: {id: dCatId}
+                    })
+                    if (deletedCategory != 1) {
+                        res.send({
+                            message: 'Note and Category were updated successfully but the category couldnt be deleted from Category table'
+                        })
+                    }
+                }
             }
         }
 
@@ -190,9 +206,34 @@ notesRouter.put('/:id', async (req, res) => {
 notesRouter.delete('/:id', async (req, res) => {
     const id = req.params.id
     try {
+
+        const categoriesNote = await CategoryNote.findAll({
+            where: {noteId: id}
+        })
+
         const deletedNote = await Note.destroy({
             where: { id: id }
         })
+
+        for (const catN of categoriesNote) {
+            const cateN = await CategoryNote.findOne({
+                where: {categoryId: catN.dataValues.categoryId} 
+            }) 
+
+            if (cateN === null || cateN === undefined) {
+                const deletedCategory = await Category.destroy({
+                    where: {id: catN.dataValues.categoryId }
+                })
+                if (deletedCategory != 1) {
+                    res.send({
+                        message: 'Note and CategoryNote were deleted successfully but the category couldnt be deleted from Category table'
+                    })
+                }
+            }
+        }
+
+        
+
         if (deletedNote == 1) {
             res.send({
                 message: 'Note was deleted successfully'
