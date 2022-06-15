@@ -3,7 +3,7 @@ import { getCategoriesById } from '../../services/getCategories'
 import Modal from '../Modal/Modal'
 import {NoteEdit} from '../NoteEditCreate/NoteEditCreate'
 
-const Note = ({ id, title, content, date, active, handleDeleteNote }) => {
+const Note = ({ id, title, content, date, active, handleDeleteNote, handleUpdateNote, handleNotes }) => {
     const [showModal, setShowModal] = useState(false)
     const [categories, setCategories] = useState([])
     
@@ -20,7 +20,7 @@ const Note = ({ id, title, content, date, active, handleDeleteNote }) => {
 
     useEffect(() => {
         handleGetCategoriesById(id)
-    }, [id])
+    }, [id, handleNotes])
 
     return (
         <div className='note'>
@@ -35,7 +35,12 @@ const Note = ({ id, title, content, date, active, handleDeleteNote }) => {
             }
             <button>Archivar nota</button>
             <button onClick={handleOpenModal}>Editar nota</button>
-            {showModal && <Modal><NoteEdit categories={categories} onClose={handleCloseModal}></NoteEdit> </Modal>}
+            {showModal && <Modal><NoteEdit
+                info={{ id, title, content }}
+                categories={categories}
+                handleUpdateNote={handleUpdateNote}
+                onClose={handleCloseModal}>
+            </NoteEdit> </Modal>}
             <button onClick={handleDeleteNote} >Eliminar nota</button>
         </div>
     )

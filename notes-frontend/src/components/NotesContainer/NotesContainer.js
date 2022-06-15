@@ -1,7 +1,7 @@
 import React from 'react'
 import Note from '../Note/Note'
 
-const NotesContainer = ({notes, handleDeleteNote}) => {
+const NotesContainer = ({notes, handleDeleteNote, handleUpdateNote, handleNotes}) => {
     return (
         <div>
             {
@@ -17,7 +17,9 @@ const NotesContainer = ({notes, handleDeleteNote}) => {
                                 content={note.content}
                                 date={note.date}
                                 active={note.active}
+                                handleNotes={() => handleNotes()}
                                 handleDeleteNote={() => handleDeleteNote(note.id)}
+                                handleUpdateNote={handleUpdateNote}
                             ></Note>
                         )
                     })

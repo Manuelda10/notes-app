@@ -1,20 +1,33 @@
 import React, {useState} from 'react'
 
-const NoteCreate = ({ onClose, handleCreateNote }) => {
-    const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
-    const [categories, setCategories] = useState('')
+const NoteEdit = ({ onClose, handleCreateNote, info, categories, handleUpdateNote }) => {
+    let initialCategories = []
+
+    if (info !== undefined) {
+        initialCategories = categories.map(cat => cat.name)
+    } 
+    
+    const [title, setTitle] = useState(info !== undefined ? info.title : '')
+    const [content, setContent] = useState(info !== undefined ? info.content : '')
+    const [categoriesString, setCategoriesString] = useState(categories !== undefined ? initialCategories.join(', ') : '')
+
+    const formatCategories = () => {
+        const catsArray = categoriesString.split(/\s*[,;.]\s*/) //Separete the string depending if it has commas, dots, or  semicoloms
+        return catsArray
+    }
 
     const handleSubmit = () => {
-        console.log(title)
-        console.log(content)
-        console.log(categories)
+        const categories = formatCategories()
         const note = {
             title,
             content,
             categories
         }
-        handleCreateNote(note)
+        if (info !== undefined) {
+            handleUpdateNote(info.id, note)
+        } else {
+            handleCreateNote(note)
+        }
         onClose()
     }
 
@@ -34,8 +47,8 @@ const NoteCreate = ({ onClose, handleCreateNote }) => {
                     onChange={e => setContent(e.target.value)}></input><br></br>
                 <label>Categories</label><br></br>
                 <textarea name='categories'
-                    value={categories}
-                    onChange={e => setCategories(e.target.value)}></textarea><br></br>
+                    value={categoriesString}
+                    onChange={e => setCategoriesString(e.target.value)}></textarea><br></br>
                 <button onClick={handleSubmit}>Save</button>
                 <button onClick={onClose} >Cerrar</button>
             </div>
@@ -43,12 +56,14 @@ const NoteCreate = ({ onClose, handleCreateNote }) => {
     )
 }
 
-const NoteEdit = ({onClose}) => {
+const NoteCreate = ({onClose, handleCreateNote}) => {
     return (
-        <div>
-            <h2>Note Edit</h2>
-            <button onClick={onClose} >Close</button>
-        </div>
+        <NoteEdit
+            onClose={onClose}
+            handleCreateNote={handleCreateNote}
+            info={undefined}
+            categories={undefined}
+        ></NoteEdit>
     )
 }
 

@@ -5,6 +5,7 @@ import { getAllNotes } from './services/getNotes';
 import deleteNote from './services/deleteNote';
 import './App.css';
 import createNote from './services/createNote';
+import updateNote from './services/updateNote'
 
 function App() {
 
@@ -25,6 +26,10 @@ function App() {
       createNote({note}).then(res => handleNotes())
   }
 
+  const handleUpdateNote = (id, note) => {
+      updateNote(id, {note}).then(res => handleNotes())
+  }
+
   useEffect(() => {
       handleNotes()
   }, [])
@@ -35,7 +40,9 @@ function App() {
       <Menu handleCreateNote={handleCreateNote}></Menu>
       <NotesContainer
         notes={notes}
-        handleDeleteNote={handleDeleteNote} ></NotesContainer>
+        handleNotes={handleNotes}
+        handleDeleteNote={handleDeleteNote}
+        handleUpdateNote={handleUpdateNote}></NotesContainer>
     </div>
   )
 }
