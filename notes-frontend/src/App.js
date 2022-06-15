@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import Menu from './components/Menu/Menu'
 import NotesContainer from './components/NotesContainer/NotesContainer';
-import { getAllNotes } from './services/getNotes';
+import { getAllNotes, getNotesByCategory } from './services/getNotes';
 import deleteNote from './services/deleteNote';
 import './App.css';
 import createNote from './services/createNote';
@@ -12,10 +12,7 @@ function App() {
   const [notes, setNotes] = useState([])
     
   const handleNotes = () => {
-      getAllNotes().then(data => {
-          setNotes(data)
-          console.log(data)
-      })
+      getAllNotes().then(data => setNotes(data))
   }
 
   const handleDeleteNote = (id) => {
@@ -30,14 +27,20 @@ function App() {
       updateNote(id, {note}).then(res => handleNotes())
   }
 
+  const handleNotesByCategory = (id) => {
+    getNotesByCategory(id).then(data => setNotes(data))
+  }
+
   useEffect(() => {
-      handleNotes()
+    handleNotes()
   }, [])
 
   return (
     <div className='App'>
       <h1 className='title-page'>Notes</h1>
-      <Menu handleCreateNote={handleCreateNote}></Menu>
+      <Menu handleCreateNote={handleCreateNote}
+        handleNotes={() => handleNotes()}
+        handleNotesByCategory={handleNotesByCategory}></Menu>
       <NotesContainer
         notes={notes}
         handleNotes={handleNotes}

@@ -30,10 +30,12 @@ const Note = ({ id, title, content, date, active, handleDeleteNote, handleUpdate
             <p>{active}</p>
             {
                 categories.map(cat => {
-                    return (<p>{cat.name}</p>)
+                    return (<p key={cat.id} >{cat.name}</p>)
                 })
             }
-            <button>Archivar nota</button>
+            <button onClick={() => handleUpdateNote(id, { active: !active })}> {
+                active === true ? 'Archivar nota' : 'Activar nota'
+            }</button>
             <button onClick={handleOpenModal}>Editar nota</button>
             {showModal && <Modal><NoteEdit
                 info={{ id, title, content }}
