@@ -1,19 +1,24 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import Menu from './components/Menu/Menu'
 import NotesContainer from './components/NotesContainer/NotesContainer';
-import { getAllNotes, getNotesByCategory } from './services/getNotes';
+import {getActiveNotes, getArchivedNotes, getActiveNotesByCategory, getArchivedNotesByCategory } from './services/getNotes';
 import deleteNote from './services/deleteNote';
-import './App.css';
 import createNote from './services/createNote';
-import updateNote from './services/updateNote'
+import updateNote from './services/updateNote';
+import './App.css';
 
 function App() {
 
   const [notes, setNotes] = useState([])
+  const [active, setActive] = useState(true)
     
-  const handleNotes = () => {
-      getAllNotes().then(data => setNotes(data))
-  }
+  const handleNotes = useCallback(() => {
+    if (active === true) {
+        getActiveNotes().then(data => setNotes(data))
+    } else {
+        getArchivedNotes().then(data => setNotes(data))
+    }
+  }, [active])
 
   const handleDeleteNote = (id) => {
       deleteNote(id).then(res => handleNotes())
@@ -27,20 +32,30 @@ function App() {
       updateNote(id, {note}).then(res => handleNotes())
   }
 
-  const handleNotesByCategory = (id) => {
-    getNotesByCategory(id).then(data => setNotes(data))
+  const handleNotesByCategory = (id, isActive) => {
+    if (isActive === true) {
+      getActiveNotesByCategory(id).then(data => setNotes(data))
+    } else {
+      getArchivedNotesByCategory(id).then(data => setNotes(data))
+    }
+  }
+
+  const handleActive = (isActive) => {
+    setActive(isActive)
   }
 
   useEffect(() => {
     handleNotes()
-  }, [])
+  }, [handleNotes])
 
   return (
     <div className='App'>
       <h1 className='title-page'>Notes</h1>
       <Menu handleCreateNote={handleCreateNote}
         handleNotes={() => handleNotes()}
-        handleNotesByCategory={handleNotesByCategory}></Menu>
+        handleNotesByCategory={handleNotesByCategory}
+        active={active}
+        handleActive={handleActive}></Menu>
       <NotesContainer
         notes={notes}
         handleNotes={handleNotes}

@@ -52,7 +52,6 @@ notesRouter.get('/active', async (req, res) => {
         const notes = await Note.findAll({
             where: {active: true}
         })
-        console.log(notes)
         res.json(notes)
     } catch (err) {
         res.status(500).send({
